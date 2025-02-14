@@ -83,7 +83,7 @@ def hero_attacks(combat_strength, m_health_points):
         print("    |    You have reduced the monster's health to: " + str(m_health_points))
     return m_health_points
 
-
+# 123
 # Monster's Attack Function
 def monster_attacks(m_combat_strength, health_points):
     ascii_image2 = """                                                                 

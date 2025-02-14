@@ -26,6 +26,20 @@ monster_powers = {
 # Define the number of stars to award the player
 num_stars = 0
 
+# Qestuin 5: Loading a saved game
+monster_won_recently = False
+with open("save.txt", "r") as f:
+    lines = f.readlines()
+    most_recent_game = lines[-1].strip()
+    print(most_recent_game)
+
+    if most_recent_game == "Monster has killed the hero":
+        monster_won_recently = True
+    else:
+        monster_won_recently = False
+
+
+
 # Loop to get valid input for Hero and Monster's Combat Strength
 i = 0
 input_invalid = True
@@ -59,6 +73,14 @@ if not input_invalid:
     input_invalid = False
     combat_strength = int(combat_strength)
     m_combat_strength = int(m_combat_strength)
+
+    if monster_won_recently:
+        combat_strength += 1
+    else:
+        m_combat_strength += 1
+
+    print(combat_strength)
+    print(m_combat_strength)
 
     # Roll for weapon
     print("    |", end="    ")
@@ -170,7 +192,15 @@ if not input_invalid:
 
     # Call Recursive function
     print("    |", end="    ")
-    num_dream_lvls = input("How many dream levels do you want to go down?")
+
+    input_invalid = True
+    attempts = 0
+    while input_invalid:
+        num_dream_lvls = input("How many dream levels do you want to go down?")
+        if num_dream_lvls.isnumeric():
+            input_invalid = False
+
+
     if num_dream_lvls != 0:
         health_points -= 1
         crazy_level = functions_lab06.inception_dream(num_dream_lvls)
@@ -182,6 +212,8 @@ if not input_invalid:
     # Loop while the monster and the player are alive. Call fight sequence functions
     print("    ------------------------------------------------------------------")
     print("    |    You meet the monster. FIGHT!!")
+    hero_won = False
+
     while m_health_points > 0 and health_points > 0:
         # Fight Sequence
         print("    |", end="    ")
@@ -195,6 +227,7 @@ if not input_invalid:
             m_health_points = functions_lab06.hero_attacks(combat_strength, m_health_points)
             if m_health_points == 0:
                 num_stars = 3
+                hero_won = False
             else:
                 print("    |", end="    ")
                 print("------------------------------------------------------------------")
@@ -217,6 +250,7 @@ if not input_invalid:
                 m_health_points = functions_lab06.hero_attacks(combat_strength, m_health_points)
                 if m_health_points == 0:
                     num_stars = 3
+                    hero_won = True
                 else:
                     num_stars = 2
 
@@ -244,3 +278,9 @@ if not input_invalid:
         stars_display = "*" * num_stars
         print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")
 
+    with open("save.txt", "a") as f:
+        if hero_won:
+            save_msg = f"Hero {short_name} has killed a monster and gained {num_stars} stars."
+        else:
+            save_msg = "Monster has killed the hero"
+        f.write(save_msg + "\n")
