@@ -42,6 +42,16 @@ print()
 
 # Lab 9 - Question 3.b.e
 # Forking
-print(os.getpid())
+print("Before fork: ", os.getpid())
 os.fork()
-print(os.getpid())
+print("After fork: ", os.getpid())
+
+if p == 0:
+    print("Child Process")
+    print("Parent Process PID:", os.getppide())
+else:
+    print("Parent Process")
+    os.wait()
+    print("Child process PID:", p)
+
+print("Last line")
